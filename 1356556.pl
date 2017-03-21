@@ -94,3 +94,31 @@ xdiff(L1, [H|T], L) :- (member(H, L1) ->
 
 removeLast(L, L1, Last) :- reverse(L, RT), setLast(RT, L1, Last).
 setLast([H|T], T, H).
+
+
+
+node(a).
+node(b).
+node(c).
+node(d).
+node(e).
+
+edge(a,b).
+edge(b,c).
+edge(c,a).
+edge(d,a).
+edge(a,e).
+
+xsubset([], _).
+xsubset([X|Xs], Set) :- xappend(_, [X|Set1], Set), xsubset(Xs, Set1).
+xappend([], L, L).
+xappend([H|T], L, [H|R]) :- xappend(T, L, R).
+
+allConnected([]).
+allConnected([H|T]) :- connect(H, T), allConnected(T).
+connect(_, []).
+connect(E, [E|T]) :- connect(E, T).
+connect(E, [H|T]) :- edge(E, H), connect(E, T).
+connect(E, [H|T]) :- edge(H, E), connect(E, T).
+
+clique(L) :- findall(X,node(X),Nodes), xsubset(L,Nodes), allConnected(L).
